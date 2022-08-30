@@ -88,6 +88,7 @@ Graph<LongValue, NullValue, NullValue> graph = new GridGraph(env)
 - 以map为例，就是在底层创建了一个转换树。当要执行流程序时，通过流图生成器将图转换为流图。
 - 在运行时，某种转换可能只是一个逻辑上的概念，而不一定会对应物理层面的转换，比如 union, split/select data stream, partitioning。
 以下是一个转换的例子：
+```
  Source              Source
       +                   +
       |                   |
@@ -112,9 +113,11 @@ Graph<LongValue, NullValue, NullValue> graph = new GridGraph(env)
                 |
                 v
               Sink
+```
               
               转换为DAG:
 
+```
  Source              Source
    +                   +
    |                   |
@@ -124,3 +127,4 @@ Graph<LongValue, NullValue, NullValue> graph = new GridGraph(env)
              |
              v
             Sink
+```
