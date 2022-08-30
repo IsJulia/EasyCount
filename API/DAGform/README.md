@@ -81,4 +81,46 @@ Graph<LongValue, NullValue, NullValue> graph = new GridGraph(env)
 
 
 # 以DAG形式编排使用所有支持的算子
-- 算子是逻辑图的结点，一个算子执行一个操作。这个要求的目标就是这个 逻辑图 要转换为 有向无环图 。
+算子是逻辑图的结点，一个算子执行一个操作。这个要求的目标就是这个 逻辑图 要转换为 有向无环图 。
+## 如何转换
+在org.apache.flink.api.dag对类Transformation的描述中，介绍了图的转换思路：
+- 转换就是对源数据流在底层进行转换，并创建新的数据流。
+- 以map为例，就是在底层创建了一个转换树。当要执行流程序时，通过流图生成器将图转换为流图。
+- 在运行时，某种转换可能只是一个逻辑上的概念，而不一定会对应物理层面的转换，比如 union, split/select data stream, partitioning。
+以下是一个转换的例子：
+ Source              Source
+      +                   +
+      |                   |
+      v                   v
+  Rebalance          HashPartition
+      +                   +
+      |                   |
+      |                   |
+      +------>Union<------+
+                +
+                |
+                v
+              Split
+                +
+                |
+                v
+              Select
+                +
+                v
+               Map
+                +
+                |
+                v
+              Sink
+              
+              转换为DAG:
+
+ Source              Source
+   +                   +
+   |                   |
+   |                   |
+   +------->Map<-------+
+             +
+             |
+             v
+            Sink
