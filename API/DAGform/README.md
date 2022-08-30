@@ -87,6 +87,7 @@ Graph<LongValue, NullValue, NullValue> graph = new GridGraph(env)
 - 转换就是对源数据流在底层进行转换，并创建新的数据流。
 - 以map为例，就是在底层创建了一个转换树。当要执行流程序时，通过流图生成器将图转换为流图。
 - 在运行时，某种转换可能只是一个逻辑上的概念，而不一定会对应物理层面的转换，比如 union, split/select data stream, partitioning。
+- 有关union, split/select的信息最终**被编码在将源连接到映射操作的边中**。
 以下是一个转换的例子：
 ```
  Source              Source
